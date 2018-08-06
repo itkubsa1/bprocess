@@ -127,7 +127,7 @@ fn iterate_dir(
 fn main() {
     //example_copy();
     //println!("{}", fs_object_age("./temp/test_folder/dir/sub/file2.txt"));
-    for (key, value) in iterate_dir("", "5", "4") {
+    for (key, value) in iterate_dir("", "5", "4").iter().min() {
         println!("{}: {}", key, value);
     }
 }
