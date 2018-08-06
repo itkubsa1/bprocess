@@ -1,0 +1,7 @@
+[package]
+name = "Rust-firststeps"
+version = "0.1.0"
+authors = ["Lynx"]
+
+[dependencies]
+fs_extra = "1.1.0"
