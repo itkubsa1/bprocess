@@ -62,8 +62,10 @@ fn fs_object_age(path: &str) -> u64 {
     let ppath = std::path::Path::new(path);
     //example_copy();
     let metadata = fs::metadata(ppath)
+        .expect("Err: File metadata is not supported on this platform. Aborting!");
+    let time = metadata
+        .created()
         .expect("Err: Creation timestamp is not supported on this platform. Aborting!");
-    let time = metadata.created().unwrap();
     match SystemTime::now().duration_since(time) {
         Ok(n) => return (n.as_secs() / SECS_IN_DAY) as u64,
         Err(_) => panic!("Err: Cant calculate age of file. Aborting!"),
@@ -78,7 +80,7 @@ fn iterate_dir(suffix: &str) /*-> io::Result<Vec<PathBuf>>*/
     path.filter_map(Result::ok)
         .filter_map(|d| {
             d.path().to_str().and_then(|f| {
-                if (f.ends_with(suffix) && (!f.ends_with("exe"))) {
+                if f.ends_with(suffix) && (!f.ends_with("exe")) {
                     Some(d)
                 } else {
                     None
