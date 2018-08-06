@@ -86,14 +86,14 @@ fn iterate_dir(
 
     let path = fs::read_dir(&WRK_PATH).expect("Err: Cant read drectory contents. Aborting!");
     path.filter_map(Result::ok)
-        .filter_map(|d| {
-            if d.path()
+        .filter_map(|e| {
+            if e.path()
                 .metadata()
                 .expect("Err: File metadata is not supported on this platform. Aborting!")
                 .file_type()
                 .is_dir()
             {
-                Some(d)
+                Some(e)
             } else {
                 None
             }
@@ -110,11 +110,11 @@ fn iterate_dir(
             })
         })
         .for_each(|f| {
-            /*println!(
-               "{:?}{:?}",
-                f.path(),
-                fs_object_age(f.path().to_str().unwrap())
-            )*/
+            //            println!(
+            //                "{:?}{:?}",
+            //                f.path(),
+            //                fs_object_age(f.path().to_str().unwrap())
+            //            );
             result.insert(
                 fs_object_age(f.path().to_str().unwrap()),
                 f.path().into_os_string().into_string().unwrap(),
@@ -125,9 +125,125 @@ fn iterate_dir(
 }
 
 fn main() {
-    //example_copy();
-    //println!("{}", fs_object_age("./temp/test_folder/dir/sub/file2.txt"));
-    for (key, value) in iterate_dir("", "5", "4").iter().min() {
-        println!("{}: {}", key, value);
+    //    for (key, value) in iterate_dir(
+    //        "__month",
+    //        "$dummy$_$that$_$never$_$can$_$be$_$met$",
+    //        "$dummy$_$that$_$never$_$can$_$be$_$met$",
+    //    ) {
+    //        println!("{}: {}", key, value);
+    //    }
+    //
+    //    println!("----------------------");
+    //    for (key, value) in iterate_dir("", "5", "4").iter().min() {
+    //        println!("{}: {}", key, value);
+    //    }
+    //
+
+    //
+    //
+    //Find most recent file without marks
+    //
+    //
+    let mut ddayslast: u64 = std::u64::MAX;
+    let mut dfilepath: String = "".to_string();
+
+    for (key, value) in iterate_dir("", "_month", "_week").iter().min() {
+        ddayslast = *key;
+        dfilepath = value.clone().to_string();
     }
+    if ddayslast != 0 {
+        panic!(
+            "Err: last daily created {} days ago.  Exitting...",
+            ddayslast
+        );
+    }
+    println!("{} {}", ddayslast, dfilepath);
+    //
+    //
+    //Found OK
+    //Let's find latest file with mark month
+    //
+    //
+    let mut mdayslast: u64 = std::u64::MAX;
+    let mut mfilepath: String = "".to_string();
+
+    for (key, value) in iterate_dir("_month", "_week", "$dummy$_$that$_$never$_$can$_$be$_$mEt$")
+        .iter()
+        .min()
+    {
+        mdayslast = *key;
+        mfilepath = value.clone().to_string();
+    }
+    //
+    //
+    //Let's find latest file with mark week
+    //
+    //
+    let mut wdayslast: u64 = std::u64::MAX;
+    let mut wfilepath: String = "".to_string();
+
+    for (key, value) in iterate_dir("_week", "_month", "$dummy$_$that$_$never$_$can$_$be$_$mEt$")
+        .iter()
+        .min()
+    {
+        wdayslast = *key;
+        wfilepath = value.clone().to_string();
+    }
+
+    //If monthly file not found (date not MAX) _OR_ found and it is older than 31 day
+    if (mdayslast == std::u64::MAX) || (mdayslast >= 31) {
+        //if weekly file found
+        if wdayslast != std::u64::MAX {
+            //rename weekly file to month
+        } else {
+            //rename daily file to month
+        }
+    }
+
+    //
+    //
+    //Find most recent file without marks once again
+    //
+    //
+    let mut ddayslast: u64 = std::u64::MAX;
+    let mut dfilepath: String = "".to_string();
+
+    for (key, value) in iterate_dir("", "_month", "_week").iter().min() {
+        ddayslast = *key;
+        dfilepath = value.clone().to_string();
+    }
+
+    //
+    //
+    //Let's find latest file with mark week once again
+    //
+    //
+    let mut wdayslast: u64 = std::u64::MAX;
+    let mut wfilepath: String = "".to_string();
+
+    for (key, value) in iterate_dir("_week", "_month", "$dummy$_$that$_$never$_$can$_$be$_$mEt$")
+        .iter()
+        .min()
+    {
+        wdayslast = *key;
+        wfilepath = value.clone().to_string();
+    }
+
+    //If weekly file not found (date not MAX) _OR_ found and it is older than 7 day
+    if (wdayslast == std::u64::MAX) || (wdayslast >= 7) {
+        //if weekly file found
+        if ddayslast != std::u64::MAX {
+            //rename daily file to week
+        } else {
+            //panic with no more daily copies to store
+        }
+    }
+
+    //if dayslast != 0 {
+    //    panic!(
+    //        "Err: last daily created {} days ago.  Exitting...",
+    //        dayslast
+    //    );
+    //}
+    println!("{} {}", mdayslast, mfilepath);
 }
