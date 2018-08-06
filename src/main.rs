@@ -5,6 +5,7 @@ use std::fs;
 
 use std::time::SystemTime;
 
+use std::collections::HashMap;
 //extern crate fs_extra;
 //use fs_extra::dir::*;
 //use fs_extra::error::*;
@@ -72,9 +73,16 @@ fn fs_object_age(path: &str) -> u64 {
     }
 }
 
-fn iterate_dir(suffix: &str) /*-> io::Result<Vec<PathBuf>>*/
-{
+fn iterate_dir(
+    suffix: &str,
+    xuffix: &str,
+    xxuffix: &str,
+) -> std::collections::HashMap<u64, String> {
+    //suffix - directory MUST have this suffix (can be empty -> all dirs are in list except filtered by next params)
+    //xuffix & xxuffix - directory MUST NOT have this suffixes, so in resulting list will be all directories mtching suffix except xuffix and xxuffix
     const WRK_PATH: &str = "./temp/test_folder"; //change to "./" for prod!!!
+
+    let mut result = HashMap::new();
 
     let path = fs::read_dir(&WRK_PATH).expect("Err: Cant read drectory contents. Aborting!");
     path.filter_map(Result::ok)
@@ -92,7 +100,9 @@ fn iterate_dir(suffix: &str) /*-> io::Result<Vec<PathBuf>>*/
         })
         .filter_map(|d| {
             d.path().to_str().and_then(|f| {
-                if f.ends_with(suffix) && (!f.ends_with(".exe")) {
+                if f.ends_with(suffix) && (!f.ends_with(".exe")) && (!f.ends_with(xuffix))
+                    && (!f.ends_with(xxuffix))
+                {
                     Some(d)
                 } else {
                     None
@@ -100,20 +110,24 @@ fn iterate_dir(suffix: &str) /*-> io::Result<Vec<PathBuf>>*/
             })
         })
         .for_each(|f| {
-            println!(
-                "{:?}{:?}",
+            /*println!(
+               "{:?}{:?}",
                 f.path(),
                 fs_object_age(f.path().to_str().unwrap())
-            )
+            )*/
+            result.insert(
+                fs_object_age(f.path().to_str().unwrap()),
+                f.path().into_os_string().into_string().unwrap(),
+            );
         });
 
-    //for path in paths {
-    //    println!("Name: {}", path.unwrap().path().display())
-    // }
+    return result;
 }
 
 fn main() {
     //example_copy();
     //println!("{}", fs_object_age("./temp/test_folder/dir/sub/file2.txt"));
-    iterate_dir("");
+    for (key, value) in iterate_dir("", "5", "4") {
+        println!("{}: {}", key, value);
+    }
 }
