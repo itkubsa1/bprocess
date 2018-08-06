@@ -79,8 +79,20 @@ fn iterate_dir(suffix: &str) /*-> io::Result<Vec<PathBuf>>*/
     let path = fs::read_dir(&WRK_PATH).expect("Err: Cant read drectory contents. Aborting!");
     path.filter_map(Result::ok)
         .filter_map(|d| {
+            if d.path()
+                .metadata()
+                .expect("Err: File metadata is not supported on this platform. Aborting!")
+                .file_type()
+                .is_dir()
+            {
+                Some(d)
+            } else {
+                None
+            }
+        })
+        .filter_map(|d| {
             d.path().to_str().and_then(|f| {
-                if f.ends_with(suffix) && (!f.ends_with("exe")) {
+                if f.ends_with(suffix) && (!f.ends_with(".exe")) {
                     Some(d)
                 } else {
                     None
