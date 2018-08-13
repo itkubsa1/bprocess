@@ -195,8 +195,30 @@ fn main() {
         //if weekly file found
         if wdayslast != std::u64::MAX {
             //rename weekly file to month
+            //
+            println!(
+                "Renaming {} to {} !",
+                &wfilepath,
+                &format!("{}{}", wfilepath, "__month")
+            );
+            fs::rename(&wfilepath, &format!("{}{}", wfilepath, "__month")).expect(
+                "Cannot rename {} to {}",
+                &wfilepath,
+                &format!("{}{}", wfilepath, "__month"),
+            );
         } else {
             //rename daily file to month
+            //
+            println!(
+                "Renaming {} to {} !",
+                &dfilepath,
+                &format!("{}{}", dfilepath, "__month")
+            );
+            fs::rename(&dfilepath, &format!("{}{}", dfilepath, "__month")).expect(
+                "Cannot rename {} to {}",
+                &dfilepath,
+                &format!("{}{}", dfilepath, "__month"),
+            );
         }
     }
 
@@ -234,8 +256,21 @@ fn main() {
         //if weekly file found
         if ddayslast != std::u64::MAX {
             //rename daily file to week
+            //
+            println!(
+                "Renaming {} to {} !",
+                &dfilepath,
+                &format!("{}{}", dfilepath, "__week")
+            );
+            fs::rename(&dfilepath, &format!("{}{}", dfilepath, "__week")).expect(
+                "Cannot rename {} to {}",
+                &dfilepath,
+                &format!("{}{}", dfilepath, "__week"),
+            );
         } else {
             //panic with no more daily copies to store
+            //
+            println!("NO DAY COPIES!")
         }
     }
 
