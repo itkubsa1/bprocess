@@ -201,11 +201,8 @@ fn main() {
                 &wfilepath,
                 &format!("{}{}", wfilepath, "__month")
             );
-            fs::rename(&wfilepath, &format!("{}{}", wfilepath, "__month")).expect(
-                "Cannot rename {} to {}",
-                &wfilepath,
-                &format!("{}{}", wfilepath, "__month"),
-            );
+            fs::rename(&wfilepath, &format!("{}{}", wfilepath, "__month"))
+                .expect("Cannot rename dir!");
         } else {
             //rename daily file to month
             //
@@ -214,11 +211,8 @@ fn main() {
                 &dfilepath,
                 &format!("{}{}", dfilepath, "__month")
             );
-            fs::rename(&dfilepath, &format!("{}{}", dfilepath, "__month")).expect(
-                "Cannot rename {} to {}",
-                &dfilepath,
-                &format!("{}{}", dfilepath, "__month"),
-            );
+            fs::rename(&dfilepath, &format!("{}{}", dfilepath, "__month"))
+                .expect("Cannot rename dir!");
         }
     }
 
@@ -262,11 +256,8 @@ fn main() {
                 &dfilepath,
                 &format!("{}{}", dfilepath, "__week")
             );
-            fs::rename(&dfilepath, &format!("{}{}", dfilepath, "__week")).expect(
-                "Cannot rename {} to {}",
-                &dfilepath,
-                &format!("{}{}", dfilepath, "__week"),
-            );
+            fs::rename(&dfilepath, &format!("{}{}", dfilepath, "__week"))
+                .expect("Cannot rename dir!");
         } else {
             //panic with no more daily copies to store
             //
