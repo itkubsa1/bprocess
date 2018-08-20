@@ -5,3 +5,4 @@ authors = ["Lynx"]
 
 [dependencies]
 fs_extra = "1.1.0"
+clap = "~2.32"

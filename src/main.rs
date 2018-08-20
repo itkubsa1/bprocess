@@ -6,6 +6,10 @@ use std::fs;
 use std::time::SystemTime;
 
 use std::collections::HashMap;
+
+extern crate clap;
+use clap::{App, Arg};
+
 //extern crate fs_extra;
 //use fs_extra::dir::*;
 //use fs_extra::error::*;
@@ -124,7 +128,105 @@ fn iterate_dir(
     return result;
 }
 
+fn is_num(arg: String) -> Result<(), String> {
+    let parsed = match arg.parse::<i32>() {
+        Ok(n) => return Ok(()),
+        Err(_) => return Err(String::from("Invalid value for days in month")),
+    };
+}
+
 fn main() {
+    //paramstr parsing
+    let matches = App::new("Dirs manager")
+        .version("1.0")
+        .author("Dmitry Korzhenevsky. <sa1@it-kub.ru>")
+        .about("Manages folders by dates. See instructions for more info.")
+        .arg(
+            Arg::with_name("month-copies")
+                .short("m")
+                .long("month-copies")
+                .value_name("DAYS")
+                .help("Number of max monthly copies to hold")
+                .takes_value(true)
+                .default_value("6")
+                .validator(is_num),
+        )
+        .arg(
+            Arg::with_name("week-copies")
+                .short("w")
+                .long("week-copies")
+                .value_name("DAYS")
+                .help("Number of max weekly copies to hold")
+                .takes_value(true)
+                .default_value("4")
+                .validator(is_num),
+        )
+        .arg(
+            Arg::with_name("day-copies")
+                .short("d")
+                .long("day-copies")
+                .value_name("DAYS")
+                .help("Number of max daily copies to hold")
+                .takes_value(true)
+                .default_value("7")
+                .validator(is_num),
+        )
+        .arg(
+            Arg::with_name("month-days")
+//                .short("")
+                .long("month-days")
+                .value_name("DAYS")
+                .help("Sets days in month")
+                .takes_value(true)
+                .default_value("31")
+                .validator(is_num)
+                .display_order(1001),
+        )
+        .arg(
+            Arg::with_name("week-days")
+//                .short("")
+                .long("week-days")
+                .value_name("DAYS")
+                .help("Sets days in week")
+                .takes_value(true)
+                .default_value("7")
+                .validator(is_num)
+                .display_order(1002),
+        )
+        .get_matches();
+
+    let pmdays = matches
+        .value_of("month-days")
+        .unwrap_or("31")
+        .parse::<i32>()
+        .unwrap();
+    println!("Value for month-days: {}", pmdays);
+    let pwdays = matches
+        .value_of("week-days")
+        .unwrap_or("7")
+        .parse::<i32>()
+        .unwrap();
+    println!("Value for week-days: {}", pwdays);
+
+    let pdcopies = matches
+        .value_of("day-copies")
+        .unwrap_or("7")
+        .parse::<i32>()
+        .unwrap();
+    println!("Value for day-copies: {}", pdcopies);
+    let pwcopies = matches
+        .value_of("week-copies")
+        .unwrap_or("4")
+        .parse::<i32>()
+        .unwrap();
+    println!("Value for week-copies: {}", pwcopies);
+    let pmcopies = matches
+        .value_of("month-copies")
+        .unwrap_or("6")
+        .parse::<i32>()
+        .unwrap();
+    println!("Value for month-copies: {}", pmcopies);
+
     //    for (key, value) in iterate_dir(
     //        "__month",
     //        "$dummy$_$that$_$never$_$can$_$be$_$met$",
