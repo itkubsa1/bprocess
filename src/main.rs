@@ -129,7 +129,7 @@ fn iterate_dir(
 }
 
 fn is_num(arg: String) -> Result<(), String> {
-    let parsed = match arg.parse::<i32>() {
+    let parsed = match arg.parse::<u64>() {
         Ok(n) => return Ok(()),
         Err(_) => return Err(String::from("Invalid value for days in month")),
     };
@@ -198,34 +198,34 @@ fn main() {
     let pmdays = matches
         .value_of("month-days")
         .unwrap_or("31")
-        .parse::<i32>()
+        .parse::<u64>()
         .unwrap();
-    println!("Value for month-days: {}", pmdays);
+    //println!("Value for month-days: {}", pmdays);
     let pwdays = matches
         .value_of("week-days")
         .unwrap_or("7")
-        .parse::<i32>()
+        .parse::<u64>()
         .unwrap();
-    println!("Value for week-days: {}", pwdays);
+    //println!("Value for week-days: {}", pwdays);
 
     let pdcopies = matches
         .value_of("day-copies")
         .unwrap_or("7")
-        .parse::<i32>()
+        .parse::<u64>()
         .unwrap();
-    println!("Value for day-copies: {}", pdcopies);
+    //println!("Value for day-copies: {}", pdcopies);
     let pwcopies = matches
         .value_of("week-copies")
         .unwrap_or("4")
-        .parse::<i32>()
+        .parse::<u64>()
         .unwrap();
-    println!("Value for week-copies: {}", pwcopies);
+    //println!("Value for week-copies: {}", pwcopies);
     let pmcopies = matches
         .value_of("month-copies")
         .unwrap_or("6")
-        .parse::<i32>()
+        .parse::<u64>()
         .unwrap();
-    println!("Value for month-copies: {}", pmcopies);
+    //println!("Value for month-copies: {}", pmcopies);
 
     //    for (key, value) in iterate_dir(
     //        "__month",
@@ -292,8 +292,8 @@ fn main() {
         wfilepath = value.clone().to_string();
     }
 
-    //If monthly file not found (date not MAX) _OR_ found and it is older than 31 day
-    if (mdayslast == std::u64::MAX) || (mdayslast >= 31) {
+    //If monthly file not found (date not MAX) _OR_ found and it is older than pmdays day
+    if (mdayslast == std::u64::MAX) || (mdayslast >= pmdays) {
         //if weekly file found
         if wdayslast != std::u64::MAX {
             //rename weekly file to month
@@ -347,8 +347,8 @@ fn main() {
         wfilepath = value.clone().to_string();
     }
 
-    //If weekly file not found (date not MAX) _OR_ found and it is older than 7 day
-    if (wdayslast == std::u64::MAX) || (wdayslast >= 7) {
+    //If weekly file not found (date not MAX) _OR_ found and it is older than pwdays day
+    if (wdayslast == std::u64::MAX) || (wdayslast >= pwdays) {
         //if weekly file found
         if ddayslast != std::u64::MAX {
             //rename daily file to week
