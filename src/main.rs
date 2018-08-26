@@ -374,4 +374,42 @@ fn main() {
     //    );
     //}
     println!("{} {}", mdayslast, mfilepath);
+
+    //now here we will delete excess of dirs
+
+    let ddircont = iterate_dir("", "_month", "_week");
+    let mut dvec: Vec<_> = ddircont.iter().clone().collect();
+    dvec.sort();
+    let pdc: usize = pdcopies as usize;
+    if dvec.len() > pdc {
+        dvec.drain(..pdc);
+        for (_key, value) in dvec {
+            //println!("{}: {}", key, value);
+            fs::remove_dir_all(value).expect("Cannot delete some daily dir!");
+        }
+    }
+
+    let ddircont = iterate_dir("_week", "_month", "$dummy$_$that$_$never$_$can$_$be$_$mEt$");
+    let mut dvec: Vec<_> = ddircont.iter().clone().collect();
+    dvec.sort();
+    let pdc: usize = pwcopies as usize;
+    if dvec.len() > pdc {
+        dvec.drain(..pdc);
+        for (_key, value) in dvec {
+            //println!("{}: {}", key, value);
+            fs::remove_dir_all(value).expect("Cannot delete some weekly dir!");
+        }
+    }
+
+    let ddircont = iterate_dir("_month", "_week", "$dummy$_$that$_$never$_$can$_$be$_$mEt$");
+    let mut dvec: Vec<_> = ddircont.iter().clone().collect();
+    dvec.sort();
+    let pdc: usize = pmcopies as usize;
+    if dvec.len() > pdc {
+        dvec.drain(..pdc);
+        for (_key, value) in dvec {
+            //println!("{}: {}", key, value);
+            fs::remove_dir_all(value).expect("Cannot delete some monthly dir!");
+        }
+    }
 }
